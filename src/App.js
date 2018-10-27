@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import './App.scss';
 
 import * as cache from './cache';
 
@@ -211,9 +211,10 @@ class App extends Component {
         </header>
 
         <section>
-          <h2>Trackers</h2>
-
-          <form onSubmit={this._createTracker}>
+          <form
+            className="input-group"
+            onSubmit={this._createTracker}
+          >
             <input
               onChange={({ target }) => {
                 this.setState({ newTracker: target.value });

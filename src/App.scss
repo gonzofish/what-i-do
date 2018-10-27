@@ -1,0 +1,64 @@
+header, section {
+  padding: 0.5em;
+}
+
+header {
+  background-color: #5588ff;
+  color: white;
+
+  h1 {
+    margin: 0;
+  }
+}
+
+button,
+input {
+  align-items: center;
+  background-color: white;
+  border: 1px solid #dbdbdb;
+  border-radius: 4px;
+  box-shadow: none;
+  color: #363636;
+  display: inline-flex;
+  font-size: 0.75rem;
+  height: 2.25em;
+  line-height: 1.5;
+  padding: calc(0.375em - 1px) 0.75em;
+  position: relative;
+  text-align: center;
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+
+  &:focus {
+    outline-width: 2px;
+  }
+  &:hover {
+    border-color: #b5b5b5;
+  }
+}
+
+input {
+  height: 1.5em;
+  text-align: left;
+}
+
+table {
+  width: 100%;
+
+  th {
+    text-align: left;
+  }
+}
+
+.input-group {
+  button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  input {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: 0;
+  }
+}
