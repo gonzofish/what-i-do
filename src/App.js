@@ -139,6 +139,8 @@ class App extends Component {
 
     return (
       <section>
+        <h2>{`Data for "${tracker.name}"`}</h2>
+
         <table>
           <thead>
             <tr>
@@ -245,39 +247,41 @@ class App extends Component {
                   <td>{tracker.name}</td>
                   <td>{tracker.data.length}</td>
                   <td>
-                    <button
-                      onClick={() => { this._startTracking(tracker.id); }}
-                      title={`Track "${tracker.name}"`}
-                      type="button"
-                    >
-                      <span
-                        role="img"
-                        aria-label="Track Icon"
+                    <div className="button-group">
+                      <button
+                        onClick={() => { this._startTracking(tracker.id); }}
+                        title={`Track "${tracker.name}"`}
+                        type="button"
                       >
-                        📝
+                        <span
+                          role="img"
+                          aria-label="Track Icon"
+                        >
+                          📝
                       </span>
-                    </button>
+                      </button>
 
-                    <button
-                      onClick={() => { this._viewData(tracker.id); }}
-                      title={`View "${tracker.name}" Data`}
-                      type="button"
-                    >
-                      <span
-                        role="img"
-                        aria-label="View Data icon"
+                      <button
+                        onClick={() => { this._viewData(tracker.id); }}
+                        title={`View "${tracker.name}" Data`}
+                        type="button"
                       >
-                        🔍
+                        <span
+                          role="img"
+                          aria-label="View Data icon"
+                        >
+                          🔍
                       </span>
-                    </button>
+                      </button>
 
-                    <button
-                      onClick={() => { this._removeTracker(index); }}
-                      title={`Remove "${tracker.name}"`}
-                      type="button"
-                    >
-                      <span role="img" aria-label="Remove Tracker Icon">🗑</span>
-                    </button>
+                      <button
+                        onClick={() => { this._removeTracker(index); }}
+                        title={`Remove "${tracker.name}"`}
+                        type="button"
+                      >
+                        <span role="img" aria-label="Remove Tracker Icon">🗑</span>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -320,24 +324,28 @@ class App extends Component {
                 />
               </label>
 
-              <button
-                title="Save Tracking Data"
-                type="submit"
-              >
-                <span role="img" aria-label="Save Tracking Data Icon">
-                  💾
-                </span>
-              </button>
+              <div className="buttons">
+                <button
+                  title="Save Tracking Data"
+                  type="submit"
+                >
+                  <span role="img" aria-label="Save Tracking Data Icon">
+                    💾
+                  </span>
+                  Save
+                </button>
 
-              <button
-                onClick={() => { this._startTracking(null); }}
-                title="Cancel Tracking Data"
-                type="button"
-              >
-                <span role="img" aria-label="Cancel Tracking Data Icon">
-                  🚫
-                </span>
-              </button>
+                <button
+                  onClick={() => { this._startTracking(null); }}
+                  title="Cancel Tracking Data"
+                  type="button"
+                >
+                  <span role="img" aria-label="Cancel Tracking Data Icon">
+                    🚫
+                  </span>
+                  Cancel
+                </button>
+              </div>
             </form>
           </section>
         )}

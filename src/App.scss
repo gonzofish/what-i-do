@@ -2,13 +2,13 @@ header, section {
   padding: 0.5em;
 }
 
+h1, h2 {
+  margin: 0;
+}
+
 header {
   background-color: #5588ff;
   color: white;
-
-  h1 {
-    margin: 0;
-  }
 }
 
 button,
@@ -38,16 +38,59 @@ input {
   }
 }
 
+button {
+  span[role="img"] {
+    &:first-child:not(:last-child) {
+      margin-right: 0.5em;
+    }
+    &:last-child:not(:first-child) {
+      margin-left: 0.5em;
+    }
+  }
+}
+
 input {
   height: 1.5em;
   text-align: left;
 }
 
+label {
+  display: block;
+  margin-bottom: 0.5em;
+
+  input {
+    display: block;
+  }
+}
+
 table {
+  margin-top: 0.5em;
   width: 100%;
 
   th {
     text-align: left;
+  }
+}
+
+.button-group {
+  button {
+    box-sizing: border-box;
+
+    &:not(:first-child) {
+      border-bottom-left-radius: 0;
+      // border-left: 0;
+      border-top-left-radius: 0;
+    }
+
+    &:not(:last-child) {
+      border-bottom-right-radius: 0;
+      border-top-right-radius: 0;
+    }
+  }
+}
+.buttons {
+  button {
+    margin-right: 0.5em;
   }
 }
 
