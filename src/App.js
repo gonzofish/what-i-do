@@ -1,31 +1,13 @@
 import React, { Component } from 'react';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import NewTrackerForm from './components/NewTracker/NewTracker';
+import TrackerData from './components/TrackerData/TrackerData';
+import TrackerTable from './components/TrackerTable/TrackerTable';
+import TrackForm from './components/TrackForm/TrackForm';
 
-import * as cache from './cache';
-
-import './icons';
 import './App.scss';
-
-const formatDateTime = (date) => (
-  `${formatDate(date)} ${formatTime(date)}`
-);
-const formatDate = (date) => (
-  `${date.getFullYear()}-${padNumber(date.getMonth() + 1)}-${padNumber(date.getDate())}`
-);
-const formatTime = (date) => (
-  `${padNumber(date.getHours())}:${padNumber(date.getMinutes())}:${padNumber(date.getSeconds())}`
-);
-const padNumber = (value, length = 2) => padLeft(value, '0', length);
-const padLeft = (value, pad, length) => {
-  let padded = `${value}`;
-
-  while (padded.length < length) {
-    padded = `${pad}${padded}`;
-  }
-
-  return padded;
-}
+import * as cache from './cache';
+import './icons';
 
 class App extends Component {
   state = {
@@ -43,10 +25,7 @@ class App extends Component {
     })
   }
 
-  _createTracker = (event) => {
-    event.preventDefault();
-
-    const name = this.state.newTracker;
+  _createTracker = (name) => {
     const id = name.replace(/\s+/g, '-');
     const trackers = this.state.trackers.concat({
       data: [],
@@ -68,22 +47,38 @@ class App extends Component {
 
     cache.setItem('trackers', trackers).then(() => {
       this.setState({
-        newTracker: '',
         trackers,
       });
     });
   };
 
-  _removeTracker = (index) => {
-    const currentTrackers = this.state.trackers;
-    const trackers = [
-      ...currentTrackers.slice(0, index),
-      ...currentTrackers.slice(index + 1),
-    ];
+  _onTrackerTableAction = (action, trackerId) => {
+    switch (action) {
+      case 'remove':
+        return this._removeTracker(trackerId);
+      case 'track':
+        return this._startTracking(trackerId);
+      case 'view':
+        return this._viewData(trackerId);
+      default:
+        return null;
+    }
+  };
 
-    cache.setItem('trackers', trackers).then(() => {
-      this.setState({ trackers });
-    });
+  _removeTracker = (trackerId) => {
+    const currentTrackers = this.state.trackers;
+    const index = currentTrackers.findIndex(({ id }) => id === trackerId);
+
+    if (index !== -1) {
+      const trackers = [
+        ...currentTrackers.slice(0, index),
+        ...currentTrackers.slice(index + 1),
+      ];
+
+      cache.setItem('trackers', trackers).then(() => {
+        this.setState({ trackers });
+      });
+    }
   };
 
   _startTracking = (trackerId) => {
@@ -96,14 +91,20 @@ class App extends Component {
     });
   };
 
-  _track = (event) => {
-    event.preventDefault();
+  _viewData = (trackerId) => {
+    const viewing = trackerId === this.state.viewing ?
+      null :
+      trackerId;
 
-    const { elements } = event.target;
-    const dateString = `${elements.trackDate.value}  ${elements.trackTime.value}`;
+    this.setState({
+      viewing,
+    });
+  };
+
+  _track = (date, value) => {
     const data = {
-      date: new Date(dateString),
-      value: elements.trackValue.value,
+      date,
+      value,
     };
     const currentTrackers = this.state.trackers;
     const index = currentTrackers.findIndex(({ id }) => id === this.state.tracking);
@@ -126,16 +127,6 @@ class App extends Component {
 
   }
 
-  _viewData = (trackerId) => {
-    const viewing = trackerId === this.state.viewing ?
-      null :
-      trackerId;
-
-    this.setState({
-      viewing,
-    });
-  };
-
   _renderData = () => {
     const trackerIndex = this.state.trackers.findIndex(({ id }) => id === this.state.viewing);
     const tracker = this.state.trackers[trackerIndex];
@@ -145,33 +136,12 @@ class App extends Component {
       <section>
         <h2>{`Data for "${tracker.name}"`}</h2>
 
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Value</th>
-              <th>&nbsp;</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {data.map((point, index) => (
-              <tr key={point.date.valueOf()}>
-                <td>{formatDateTime(point.date)}</td>
-                <td>{point.value}</td>
-                <th>
-                  <button
-                    onClick={() => this._deleteData(trackerIndex, index)}
-                    title="Delete data point"
-                    type="button"
-                  >
-                    <FontAwesomeIcon icon="trash" />
-                  </button>
-                </th>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <TrackerData
+          data={data}
+          onDelete={(index) => {
+            this._deleteData(trackerIndex, index);
+          }}
+        />
       </section>
     );
   };
@@ -197,13 +167,9 @@ class App extends Component {
         trackers: newTrackers,
       });
     });
-  }
+  };
 
   render() {
-    const now = new Date();
-    const defaultDate = formatDate(now);
-    const defaultTime = formatTime(now);
-
     return (
       <div className="main">
         <header>
@@ -212,126 +178,22 @@ class App extends Component {
         </header>
 
         <section>
-          <form
-            className="input-group"
-            onSubmit={this._createTracker}
-          >
-            <input
-              onChange={({ target }) => {
-                this.setState({ newTracker: target.value });
-              }}
-              type="text"
-              value={this.state.newTracker}
-            />
-            <button
-              title="Add Tracker"
-              type="submit"
-            >
-              <FontAwesomeIcon icon="plus" />
-            </button>
-          </form>
+          <NewTrackerForm onSubmit={this._createTracker} />
 
-          <table>
-            <thead>
-              <tr>
-                <th>Tracker</th>
-                <th>Data Points</th>
-                <th>&nbsp;</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {this.state.trackers.map((tracker, index) => (
-                <tr key={tracker.id}>
-                  <td>{tracker.name}</td>
-                  <td>{tracker.data.length}</td>
-                  <td>
-                    <div className="button-group">
-                      <button
-                        onClick={() => { this._startTracking(tracker.id); }}
-                        title={`Track "${tracker.name}"`}
-                        type="button"
-                      >
-                        <FontAwesomeIcon icon="pencil-alt" />
-                      </button>
-
-                      <button
-                        onClick={() => { this._viewData(tracker.id); }}
-                        title={`View "${tracker.name}" Data`}
-                        type="button"
-                      >
-                        <FontAwesomeIcon icon={['far', 'eye']} />
-                      </button>
-
-                      <button
-                        onClick={() => { this._removeTracker(index); }}
-                        title={`Remove "${tracker.name}"`}
-                        type="button"
-                      >
-                        <FontAwesomeIcon icon="trash" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <TrackerTable
+            onAction={this._onTrackerTableAction}
+            trackers={this.state.trackers}
+          />
         </section>
 
         {this.state.tracking && (
           <section>
             <h2>Add Tracking Data</h2>
 
-            <form onSubmit={this._track}>
-              <label htmlFor="trackDate">
-                Date:
-                <input
-                  defaultValue={defaultDate}
-                  id="trackDate"
-                  name="trackDate"
-                  type="date"
-                />
-              </label>
-
-              <label htmlFor="trackTime">
-                Time:
-                <input
-                  defaultValue={defaultTime}
-                  id="trackTime"
-                  name="trackTime"
-                  type="time"
-                />
-              </label>
-
-              <label htmlFor="trackValue">
-                Units:
-                <input
-                  defaultValue={0}
-                  id="trackValue"
-                  name="trackValue"
-                  type="number"
-                />
-              </label>
-
-              <div className="buttons">
-                <button
-                  title="Save Tracking Data"
-                  type="submit"
-                >
-                  <FontAwesomeIcon icon="save" />
-                  <span>Save</span>
-                </button>
-
-                <button
-                  onClick={() => { this._startTracking(null); }}
-                  title="Cancel Tracking Data"
-                  type="button"
-                >
-                  <FontAwesomeIcon icon="ban" />
-                  <span>Cancel</span>
-                </button>
-              </div>
-            </form>
+            <TrackForm
+              onCancel={() => { this.setState({ tracking: null }); }}
+              onSave={this._track}
+            />
           </section>
         )}
 
