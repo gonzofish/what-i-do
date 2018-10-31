@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
-import './App.scss';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import * as cache from './cache';
+
+import './icons';
+import './App.scss';
 
 const formatDateTime = (date) => (
   `${formatDate(date)} ${formatTime(date)}`
@@ -161,12 +165,7 @@ class App extends Component {
                     title="Delete data point"
                     type="button"
                   >
-                    <span
-                      aria-label="Delete data point icon"
-                      role="img"
-                    >
-                      🗑
-                    </span>
+                    <FontAwesomeIcon icon="trash" />
                   </button>
                 </th>
               </tr>
@@ -228,7 +227,7 @@ class App extends Component {
               title="Add Tracker"
               type="submit"
             >
-              <span role="img" aria-label="Add Tracker Icon">➕</span>
+              <FontAwesomeIcon icon="plus" />
             </button>
           </form>
 
@@ -253,12 +252,7 @@ class App extends Component {
                         title={`Track "${tracker.name}"`}
                         type="button"
                       >
-                        <span
-                          role="img"
-                          aria-label="Track Icon"
-                        >
-                          📝
-                      </span>
+                        <FontAwesomeIcon icon="pencil-alt" />
                       </button>
 
                       <button
@@ -266,12 +260,7 @@ class App extends Component {
                         title={`View "${tracker.name}" Data`}
                         type="button"
                       >
-                        <span
-                          role="img"
-                          aria-label="View Data icon"
-                        >
-                          🔍
-                      </span>
+                        <FontAwesomeIcon icon={['far', 'eye']} />
                       </button>
 
                       <button
@@ -279,7 +268,7 @@ class App extends Component {
                         title={`Remove "${tracker.name}"`}
                         type="button"
                       >
-                        <span role="img" aria-label="Remove Tracker Icon">🗑</span>
+                        <FontAwesomeIcon icon="trash" />
                       </button>
                     </div>
                   </td>
@@ -329,10 +318,8 @@ class App extends Component {
                   title="Save Tracking Data"
                   type="submit"
                 >
-                  <span role="img" aria-label="Save Tracking Data Icon">
-                    💾
-                  </span>
-                  Save
+                  <FontAwesomeIcon icon="save" />
+                  <span>Save</span>
                 </button>
 
                 <button
@@ -340,10 +327,8 @@ class App extends Component {
                   title="Cancel Tracking Data"
                   type="button"
                 >
-                  <span role="img" aria-label="Cancel Tracking Data Icon">
-                    🚫
-                  </span>
-                  Cancel
+                  <FontAwesomeIcon icon="ban" />
+                  <span>Cancel</span>
                 </button>
               </div>
             </form>

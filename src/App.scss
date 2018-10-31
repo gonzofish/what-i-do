@@ -39,7 +39,7 @@ input {
 }
 
 button {
-  span[role="img"] {
+  .svg-inline--fa {
     &:first-child:not(:last-child) {
       margin-right: 0.5em;
     }
